@@ -1,17 +1,25 @@
-# gammeo-mq
+# GammeoMQ
 
 GammeoMQ is a distributed message queue. It uses custom store and transport to be software agnostic.
 
 ## Setup
 
+To install the package you must first be logged in the GitHub registry:
+
 ```sh
-npm install gammeo-mq
+npm login --registry=https://npm.pkg.github.com/
+```
+
+and then you can install it:
+
+```sh
+npm install @studiomagnetique/gammeo-mq
 ```
 
 ## Usage
 
 ```js
-import { MessageQueue, InMemoryStore, InMemoryTransport } from 'gammeo-mq';
+import { MessageQueue, InMemoryStore, InMemoryTransport } from '@studiomagnetique/gammeo-mq';
 
 // the queue can take options as third argument but this one is optional
 const queue = new MessageQueue(new InMemoryStore(), new InMemoryTransport(), {
@@ -33,7 +41,7 @@ queue.publish('foo:1', [{ hello: 'world' }]);
 If you're intend to use the message queue accross several processes like workers, you must use a distributed store and transport, like the mongodb store and the redis transport:
 
 ```js
-import { MessageQueue, MongoDBStore, RedisTransport } from 'gammeo-mq';
+import { MessageQueue, MongoDBStore, RedisTransport } from '@studiomagnetique/gammeo-mq';
 
 // the MongoDBStore takes the same arguments than the mongodb node client
 const store = new MongoDBStore('mongodb://root:password@mongo:27017', {
@@ -54,4 +62,13 @@ The test env uses docker to get a running mongodb and redis to test the MongoDBS
 
 ```sh
 npm run docker test
+```
+
+## Publish
+
+To publish the package you must first be logged in the GitHub registry:
+
+```sh
+npm login --registry=https://npm.pkg.github.com/
+npm publish
 ```
