@@ -5,13 +5,13 @@ GammeoMQ is a distributed message queue. It uses custom store and transport to b
 ## Setup
 
 ```sh
-npm install gammeomq
+npm install gammeo-mq
 ```
 
 ## Usage
 
 ```js
-import { MessageQueue, InMemoryStore, InMemoryTransport } from 'gammeomq';
+import { MessageQueue, InMemoryStore, InMemoryTransport } from 'gammeo-mq';
 
 // the queue can take options as third argument but this one is optional
 const queue = new MessageQueue(new InMemoryStore(), new InMemoryTransport(), {
@@ -33,7 +33,7 @@ queue.publish('foo:1', [{ hello: 'world' }]);
 If you're intend to use the message queue accross several processes like workers, you must use a distributed store and transport, like the mongodb store and the redis transport:
 
 ```js
-import { MessageQueue, MongoDBStore, RedisTransport } from 'gammeomq';
+import { MessageQueue, MongoDBStore, RedisTransport } from 'gammeo-mq';
 
 // the MongoDBStore takes the same arguments than the mongodb node client
 const store = new MongoDBStore('mongodb://root:password@mongo:27017', {
