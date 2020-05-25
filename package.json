@@ -2,13 +2,13 @@
     "name": "@studiomagnetique/gammeo-mq",
     "version": "0.0.1",
     "description": "Software agnostic message queue",
-    "private": true,
     "main": "lib/index.js",
     "engines": {
         "node": ">=9.0.0"
     },
     "files": [
-        "lib/**/*"
+        "lib/**/*",
+        "!__tests__"
     ],
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/"

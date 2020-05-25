@@ -6,6 +6,8 @@ GammeoMQ is a distributed message queue. It uses custom store and transport to b
 
 To install the package you must first be logged in the GitHub registry:
 
+_Tip: Go to [Authenticating to GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#authenticating-to-github-packages) for more information._
+
 ```sh
 npm login --registry=https://npm.pkg.github.com/
 ```
@@ -58,7 +60,7 @@ const queue = new MessageQueue(store, transport, {
 
 ## Tests
 
-The test env uses docker to get a running mongodb and redis to test the MongoDBStore and RedisStore. To run them accros the provided docker-compose file run:
+The test env uses docker to get a running mongodb and redis to test the MongoDBStore and RedisStore. To run them accross the provided docker-compose file run:
 
 ```sh
 npm run docker test
@@ -66,9 +68,14 @@ npm run docker test
 
 ## Publish
 
+First, make sure you've bumped the version number and update the changelog.
+
 To publish the package you must first be logged in the GitHub registry:
+
+_Tip: Go to [Authenticating to GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#authenticating-to-github-packages) for more information._
 
 ```sh
 npm login --registry=https://npm.pkg.github.com/
-npm publish
 ```
+
+Then just run: `npm publish`
