@@ -12,7 +12,13 @@ _Tip: Go to [Authenticating to GitHub Packages](https://help.github.com/en/packa
 npm login --registry=https://npm.pkg.github.com/
 ```
 
-and then you can install it:
+Then add a `.npmrc` file to your project and write in it:
+
+```
+registry=https://npm.pkg.github.com/studiomagnetique
+```
+
+finally you can install it by running:
 
 ```sh
 npm install @studiomagnetique/gammeo-mq
@@ -58,7 +64,11 @@ const queue = new MessageQueue(store, transport, {
 });
 ```
 
-## Tests
+## Development
+
+To work on this module, just run `npm install` first.
+
+### Tests
 
 The test env uses docker to get a running mongodb and redis to test the MongoDBStore and RedisStore. To run them accross the provided docker-compose file run:
 
@@ -66,7 +76,7 @@ The test env uses docker to get a running mongodb and redis to test the MongoDBS
 npm run docker test
 ```
 
-## Publish
+### Publish
 
 First, make sure you've bumped the version number and update the changelog.
 
