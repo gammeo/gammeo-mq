@@ -23,7 +23,7 @@ jobs:
       - name: Test
         run: npm run docker run test:badges
 
-      - name: Update README
+      - name: Commit badges
         uses: stefanzweifel/git-auto-commit-action@v4.1.2
         with: 
           file_pattern: '.badges/*'
