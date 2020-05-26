@@ -57,18 +57,14 @@ export class Router<Packet> extends Observable<PacketBag<Packet>> {
     }
 
     private subscribeToTransport() {
-        this.transportSubscription = this.transport$
-            // We randomize delay to ensure that in case of multiple message queue using the same store/transport,
-            // their consumers won't receive at the same time the messsage.
-            // We do this to be able to handle concurrent access of the same data inside consumers
-            .subscribe((packedPacket) => {
-                const packetBag: PacketBag<Packet> = {
-                    packet: Router.unpack<Packet>(packedPacket),
-                    acknowledge: () => this.transport$.remove(packedPacket),
-                    reject: () => this.transport$.route(packedPacket),
-                };
-                this.observer.next(packetBag);
-            });
+        this.transportSubscription = this.transport$.subscribe((packedPacket) => {
+            const packetBag: PacketBag<Packet> = {
+                packet: Router.unpack<Packet>(packedPacket),
+                acknowledge: () => this.transport$.remove(packedPacket),
+                reject: () => this.transport$.route(packedPacket),
+            };
+            this.observer.next(packetBag);
+        });
         // When the transport subscription will be canceled we want to close the transport
         this.transportSubscription.add(() => this.transport$.close());
 
