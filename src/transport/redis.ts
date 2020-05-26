@@ -3,7 +3,7 @@ import redis from 'redis';
 
 import { Transport } from '../types';
 
-const NEW_MESSAGE_NOTIFICATION = 'NEW_MESSAGE';
+const NEW_PACKET_NOTIFICATION = 'NEW_PACKET';
 
 export interface RedisTransportOptions {
     notificationChannel: string;
@@ -62,7 +62,7 @@ export class RedisTransport extends Observable<string> implements Transport {
         }
 
         this.publisher.rpush(this.options.queueKey, packedPacket);
-        this.publisher.publish(this.options.notificationChannel, NEW_MESSAGE_NOTIFICATION);
+        this.publisher.publish(this.options.notificationChannel, NEW_PACKET_NOTIFICATION);
     }
 
     remove(_: string) {
@@ -72,7 +72,7 @@ export class RedisTransport extends Observable<string> implements Transport {
     private onMessage = (channel: string, notification: string) => {
         if (
             channel !== this.options.notificationChannel ||
-            notification !== NEW_MESSAGE_NOTIFICATION
+            notification !== NEW_PACKET_NOTIFICATION
         ) {
             return;
         }
