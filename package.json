@@ -17,7 +17,9 @@
         "docker": "docker-compose run node npm",
         "build": "tsc",
         "prepublishOnly": "npm run build",
-        "test": "jest"
+        "test": "jest",
+        "test:coverage": "npm test -- --coverage",
+        "test:badges": "npm run test:coverage  && jest-coverage-badges --output ./.badges"
     },
     "types": "lib/index.d.ts",
     "repository": {

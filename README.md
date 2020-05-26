@@ -1,6 +1,6 @@
 # GammeoMQ
 
-![Test with Docker](https://github.com/studiomagnetique/gammeo-mq/workflows/Test%20with%20Docker/badge.svg)
+![Coverage:branches](./.badges/badge-branches.svg) ![Coverage:functions](./.badges/badge-functions.svg) ![Coverage:lines](./.badges/badge-lines.svg) ![Coverage:statements](./.badges/badge-statements.svg)
 
 GammeoMQ is a distributed message queue. It uses custom store and transport to be software agnostic.
 
