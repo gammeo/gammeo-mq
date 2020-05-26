@@ -15,6 +15,7 @@ export interface Transport extends Observable<string> {
     close(): void | Promise<void>;
     open(): void | Promise<void>;
     route(packedPacket: string): void | Promise<void>;
+    remove(packedPacket: string): void | Promise<void>;
 }
 
 export interface Store {
@@ -22,4 +23,10 @@ export interface Store {
     open(): void | Promise<void>;
     read(id: Enveloppe['id']): Enveloppe | Promise<Enveloppe> | never;
     write(enveloppe: Enveloppe): void | Promise<void>;
+}
+
+export interface PacketBag<Packet> {
+    acknowledge(): void | Promise<void>;
+    packet: Packet;
+    reject(): void | Promise<void>;
 }

@@ -1,21 +1,39 @@
 import { Observable, Subscriber } from 'rxjs';
 import redis from 'redis';
+
 import { Transport } from '../types';
 
-const REDIS_CHANNEL = 'gammeomq';
+const NEW_PACKET_NOTIFICATION = 'NEW_PACKET';
+
+export interface RedisTransportOptions {
+    notificationChannel: string;
+    queueKey: string;
+}
+
+const defaultOptions: RedisTransportOptions = {
+    notificationChannel: 'gammeomq',
+    queueKey: 'gammeomq',
+};
 
 export class RedisTransport extends Observable<string> implements Transport {
     private observer!: Subscriber<string>;
-    private options?: redis.ClientOpts;
+    private clientOptions?: redis.ClientOpts;
+    private options: RedisTransportOptions;
     private publisher?: redis.RedisClient;
     private subscriber?: redis.RedisClient;
+    private timeoutIds: NodeJS.Timeout[] = [];
 
-    constructor(options: redis.ClientOpts) {
+    constructor(clientOptions: redis.ClientOpts, options?: Partial<RedisTransportOptions>) {
         super((o) => (this.observer = o));
-        this.options = options;
+        this.clientOptions = clientOptions;
+        this.options = { ...defaultOptions, ...options };
     }
 
     close() {
+        for (const timeoutId of this.timeoutIds) {
+            clearTimeout(timeoutId);
+        }
+
         if (!this.publisher && !this.subscriber) {
             throw new Error('Transport is closed');
         }
@@ -32,9 +50,9 @@ export class RedisTransport extends Observable<string> implements Transport {
     }
 
     open() {
-        this.publisher = redis.createClient(this.options);
-        this.subscriber = redis.createClient(this.options);
-        this.subscriber.subscribe(REDIS_CHANNEL);
+        this.publisher = redis.createClient(this.clientOptions);
+        this.subscriber = redis.createClient(this.clientOptions);
+        this.subscriber.subscribe(this.options.notificationChannel);
         this.subscriber.on('message', this.onMessage);
     }
 
@@ -43,14 +61,35 @@ export class RedisTransport extends Observable<string> implements Transport {
             throw new Error('Transport is closed');
         }
 
-        this.publisher.publish(REDIS_CHANNEL, packedPacket);
+        this.publisher.rpush(this.options.queueKey, packedPacket);
+        this.publisher.publish(this.options.notificationChannel, NEW_PACKET_NOTIFICATION);
     }
 
-    private onMessage = (channel: string, message: string) => {
-        if (channel !== REDIS_CHANNEL) {
+    remove(_: string) {
+        //do nothing
+    }
+
+    private onMessage = (channel: string, notification: string) => {
+        if (
+            channel !== this.options.notificationChannel ||
+            notification !== NEW_PACKET_NOTIFICATION
+        ) {
             return;
         }
 
-        this.observer.next(message);
+        // random delay to avoid having always the same consumer getting over and over the same packet in case of a reject
+        const timeoutId = setTimeout(() => {
+            if (!this.publisher) {
+                throw new Error('Transport is closed');
+            }
+            this.publisher.rpop(this.options.queueKey, (_, packet) => {
+                if (packet) {
+                    this.observer.next(packet);
+                }
+            });
+            this.timeoutIds.splice(this.timeoutIds.indexOf(timeoutId), 1);
+        }, Math.random() * 10);
+
+        this.timeoutIds.push(timeoutId);
     };
 }

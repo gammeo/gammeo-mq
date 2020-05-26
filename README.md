@@ -32,7 +32,7 @@ npm install @studiomagnetique/gammeo-mq
 import { MessageQueue, InMemoryStore, InMemoryTransport } from '@studiomagnetique/gammeo-mq';
 
 // the queue can take options as third argument but this one is optional
-const queue = new MessageQueue(new InMemoryStore(), new InMemoryTransport(), {
+const queue = new MessageQueue('MyAwesomeQueue', new InMemoryStore(), new InMemoryTransport(), {
     retryInterval: 100,
     maxRetryAttempts: 3,
 });
@@ -60,7 +60,7 @@ const store = new MongoDBStore('mongodb://root:password@mongo:27017', {
 
 // the RedisTransport takes the same arguments than the redis node client
 const transport = new RedisTransport();
-const queue = new MessageQueue(store, transport, {
+const queue = new MessageQueue(`MyAwesomeQueue ${process.pid}`, store, transport, {
     retryInterval: 100,
     maxRetryAttempts: 3,
 });

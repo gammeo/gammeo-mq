@@ -1,13 +1,15 @@
-import { concatMap, bufferTime, tap } from 'rxjs/operators';
+import { concatMap, bufferTime } from 'rxjs/operators';
 import { Subscription, Subject } from 'rxjs';
-import { merge } from 'lodash';
 
 import { ConsumerConfigPool } from './consumer-config-pool';
 import { Enveloppe } from './enveloppe';
-import { Message, Store, Transport, ConsumerConfig } from '../types';
+import { Message, Store, Transport, ConsumerConfig, PacketBag } from '../types';
 import { Router } from './router';
 
-const consumerChannel = (routingId: ConsumerConfig['routingId']) => `__consumer(${routingId})`;
+const consumerChannel = (
+    messageQueueRoutingId: string,
+    consumerRoutingId: ConsumerConfig['routingId'],
+) => `__consumer(${messageQueueRoutingId}@${consumerRoutingId})`;
 
 export interface MessageQueueOptions {
     maxRetryAttempts: number;
@@ -33,6 +35,7 @@ type MessageQueuePacket = { id: Enveloppe['id'] };
  */
 export class MessageQueue {
     private consumerConfigs = new ConsumerConfigPool();
+    private routingId: string;
     private options: MessageQueueOptions;
     private retry$ = new Subject<Enveloppe>();
     private router$: Router<MessageQueuePacket>;
@@ -41,10 +44,16 @@ export class MessageQueue {
     private retrySubscription?: Subscription;
     private routerSubscription?: Subscription;
 
-    constructor(store: Store, transport$: Transport, options: Partial<MessageQueueOptions> = {}) {
+    constructor(
+        routingId: string,
+        store: Store,
+        transport$: Transport,
+        options: Partial<MessageQueueOptions> = {},
+    ) {
+        this.routingId = routingId;
         this.store = store;
         this.router$ = new Router(transport$);
-        this.options = merge({}, defaultOptions, options);
+        this.options = { ...defaultOptions, ...options };
     }
 
     public async publish(channel: string | null, messages: Message[]) {
@@ -67,7 +76,7 @@ export class MessageQueue {
         const reconciledRoutingId = routingId || consumer.name || consumer.toString().slice(0, 20);
         return this.consumerConfigs.push({
             consumer,
-            channels: [...channels, consumerChannel(reconciledRoutingId)],
+            channels: [...channels, consumerChannel(this.routingId, reconciledRoutingId)],
             routingId: reconciledRoutingId,
         });
     }
@@ -97,12 +106,16 @@ export class MessageQueue {
         this.subscribeToRouter();
     }
 
-    private async deliver(packet: MessageQueuePacket) {
+    private async deliver(packetBag: PacketBag<MessageQueuePacket>) {
         // A new packet was emitted by the router,
         // we get the enveloppe linked to this packet and look for consumers
-        const enveloppe = await this.store.read(packet.id);
+        const enveloppe = await this.store.read(packetBag.packet.id);
         const consumerConfigs = this.consumerConfigs.filterByChannel(enveloppe.channel);
         let errorCount = 0;
+
+        if (consumerConfigs.length === 0) {
+            return await packetBag.reject();
+        }
 
         for (const consumerConfig of consumerConfigs) {
             try {
@@ -141,7 +154,7 @@ export class MessageQueue {
         error: Error,
     ) {
         const clone = enveloppe.clone(
-            consumerChannel(consumerConfig.routingId),
+            consumerChannel(this.routingId, consumerConfig.routingId),
             enveloppe.retryAttempts + 1,
         );
 
