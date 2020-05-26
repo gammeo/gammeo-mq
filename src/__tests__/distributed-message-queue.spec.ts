@@ -1,5 +1,3 @@
-import { InMemoryStore } from '../store/in-memory';
-import { InMemoryTransport } from '../transport/in-memory';
 import { MessageQueue } from '../core/message-queue';
 import { waitForNextTick, waitFor } from './test-utils';
 import { MongoDBStore } from '../store/mongodb';
