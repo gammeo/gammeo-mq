@@ -26,4 +26,8 @@ export class InMemoryTransport extends Observable<string> implements Transport {
     route(packedPacket: string) {
         this.network$.next(packedPacket);
     }
+
+    remove(_: string) {
+        //do nothing
+    }
 }

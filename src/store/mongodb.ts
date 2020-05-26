@@ -3,14 +3,28 @@ import { MongoClient, MongoClientOptions } from 'mongodb';
 import { Store } from '../types';
 import { Enveloppe } from '../core/enveloppe';
 
+export interface MongoDBStoreOptions {
+    collectionName: string;
+}
+
+const defaultOptions: MongoDBStoreOptions = {
+    collectionName: 'gammeomq',
+};
+
 export class MongoDBStore implements Store {
     private client?: MongoClient;
     private uri: string;
-    private options?: MongoClientOptions;
+    private clientOptions?: MongoClientOptions;
+    private options: MongoDBStoreOptions;
 
-    constructor(uri: string, options?: MongoClientOptions) {
+    constructor(
+        uri: string,
+        clientOptions?: MongoClientOptions,
+        options?: Partial<MongoDBStoreOptions>,
+    ) {
         this.uri = uri;
-        this.options = options;
+        this.clientOptions = clientOptions;
+        this.options = { ...defaultOptions, ...options };
     }
 
     public async close() {
@@ -20,7 +34,7 @@ export class MongoDBStore implements Store {
     }
 
     public async open() {
-        this.client = await new MongoClient(this.uri, this.options).connect();
+        this.client = await new MongoClient(this.uri, this.clientOptions).connect();
     }
 
     private get collection() {
@@ -28,7 +42,7 @@ export class MongoDBStore implements Store {
             throw new Error('The store is closed');
         }
 
-        return this.client.db().collection('gammeomq');
+        return this.client.db().collection(this.options.collectionName);
     }
 
     public async write(enveloppe: Enveloppe) {

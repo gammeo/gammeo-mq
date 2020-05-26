@@ -21,10 +21,10 @@ describe('MessageQueue', () => {
     ].forEach(({ store, transport }) => {
         describe(`${store.constructor.name} + ${transport.constructor.name}`, () => {
             beforeEach(async () => {
-                queue = new MessageQueue(store, transport, {
+                queue = new MessageQueue('DinerMessageQueue', store, transport, {
                     // this must be higher than the network latency timeouts,
                     // otherwise it will break tests as the retry queue will be flushed by the network latency timeout
-                    retryInterval: 200,
+                    retryInterval: 300,
                     maxRetryAttempts: 2,
                 });
                 await queue.open();
@@ -41,8 +41,9 @@ describe('MessageQueue', () => {
 
                 const consumer1 = jest.fn();
                 const consumer2 = jest.fn();
-                const unsubscribe1 = queue.subscribe(['orders'], consumer1);
-                const unsubscribe2 = queue.subscribe(['bills'], consumer2);
+
+                const unsubscribe1 = queue.subscribe(['orders'], consumer1, 'consumer1');
+                const unsubscribe2 = queue.subscribe(['bills'], consumer2, 'consumer2');
 
                 await queue.publish('orders', [
                     {
@@ -133,8 +134,8 @@ describe('MessageQueue', () => {
                 const consumer2 = jest
                     .fn()
                     .mockImplementationOnce(() => Promise.reject(new Error('Oops!')));
-                const unsubscribe1 = queue.subscribe(['orders'], consumer1);
-                const unsubscribe2 = queue.subscribe(['orders'], consumer2);
+                const unsubscribe1 = queue.subscribe(['orders'], consumer1, 'consumer1');
+                const unsubscribe2 = queue.subscribe(['orders'], consumer2, 'consumer2');
 
                 await queue.publish('orders', [
                     {
@@ -161,7 +162,7 @@ describe('MessageQueue', () => {
                     },
                 ]);
 
-                await waitFor(200); // waiting for retry
+                await waitFor(300); // waiting for retry
                 await waitFor(100); // network latency
                 await waitForNextTick();
                 expect(consumer2).toHaveBeenCalledTimes(2);
@@ -183,7 +184,7 @@ describe('MessageQueue', () => {
                     .mockImplementationOnce(() => Promise.reject(new Error('Oops!')))
                     .mockImplementationOnce(() => Promise.reject(new Error('Oops!')))
                     .mockImplementationOnce(() => Promise.reject(new Error('Oops!')));
-                const unsubscribe = queue.subscribe(['orders'], consumer);
+                const unsubscribe = queue.subscribe(['orders'], consumer, 'consumer');
 
                 await queue.publish('orders', [
                     {
@@ -203,7 +204,7 @@ describe('MessageQueue', () => {
                     },
                 ]);
 
-                await waitFor(100); // waiting for first retry
+                await waitFor(300); // waiting for first retry
                 await waitFor(100); // network latency
                 await waitForNextTick();
                 expect(consumer).toHaveBeenCalledTimes(2);
@@ -225,7 +226,7 @@ describe('MessageQueue', () => {
                     },
                 ]);
 
-                await waitFor(200); // waiting for retry interval
+                await waitFor(300); // waiting for retry interval
                 await waitFor(100); // network latency
                 await waitForNextTick();
                 expect(consumer).toHaveBeenCalledTimes(3);
