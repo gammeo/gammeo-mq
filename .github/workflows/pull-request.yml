@@ -26,6 +26,9 @@ jobs:
       - name: Commit badges
         uses: stefanzweifel/git-auto-commit-action@v4.1.2
         with: 
-          file_pattern: '.badges/*'
+          file_pattern: '.badges/*.svg'
           commit_message: 'Doc(readme): Update badges with last coverage'
           branch: ${{ github.head_ref }}
+        env:
+          CI: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
