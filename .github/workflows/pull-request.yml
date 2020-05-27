@@ -23,6 +23,9 @@ jobs:
       - name: Test
         run: npm run docker run test:badges
 
+      - name: list directory
+        run: ls
+        
       - name: Commit badges
         uses: stefanzweifel/git-auto-commit-action@v4.1.2
         with: 
