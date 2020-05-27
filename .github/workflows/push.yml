@@ -9,6 +9,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Install dependencies
         run: npm ci
@@ -16,5 +18,24 @@ jobs:
       - name: Build the stack
         run: docker-compose up -d
 
+      - name: Install badges dependencies
+        run: npm install --global jest-coverage-badges
+
       - name: Test
-        run: npm run docker test
+        run: npm run docker run test:badges
+        
+      - name: list directory
+        run: ls
+
+      - name: list directory coverage
+        run: ls coverage
+
+      - name: Commit badges
+        uses: stefanzweifel/git-auto-commit-action@v4.1.2
+        with: 
+          file_pattern: '.badges/*.svg'
+          commit_message: 'Doc(readme): Update badges with last coverage'
+          branch: ${{ github.head_ref }}
+        env:
+          CI: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
