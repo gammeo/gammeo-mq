@@ -20,12 +20,12 @@ jobs:
       - name: Build the stack
         run: docker-compose up -d
 
+      - name: Install badges dependencies
+        run: npm install --global jest-coverage-badges
+
       - name: Test
         run: npm run docker run test:badges
-      
-      - name: Create badges
-        run: npm run docker run docker:test:badges
-
+        
       - name: list directory
         run: ls
 
