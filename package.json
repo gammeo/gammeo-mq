@@ -19,7 +19,8 @@
         "prepublishOnly": "npm run build",
         "test": "jest",
         "test:coverage": "npm test -- --coverage",
-        "test:badges": "npm run test:coverage  && npx jest-coverage-badges --output './.badges'"
+        "test:badges": "npm run test:coverage  && npx jest-coverage-badges --output './.badges'",
+        "docker:test:badges": "docker-compose run node npx jest-coverage-badges --output './.badges'"
     },
     "types": "lib/index.d.ts",
     "repository": {
