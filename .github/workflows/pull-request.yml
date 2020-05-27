@@ -20,24 +20,12 @@ jobs:
       - name: Build the stack
         run: docker-compose up -d
 
-      - name: Install badges dependencies
-        run: npm install --global jest-coverage-badges
-
       - name: Test
         run: npm run docker run test:badges
-        
-      - name: list directory
-        run: ls
+      
+      - uses: actions/checkout@master
 
-      - name: list directory coverage
-        run: ls coverage
-
-      - name: Commit badges
-        uses: stefanzweifel/git-auto-commit-action@v4.1.2
-        with: 
-          file_pattern: '.badges/*.svg'
-          commit_message: 'Doc(readme): Update badges with last coverage'
-          branch: ${{ github.head_ref }}
-        env:
-          CI: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
