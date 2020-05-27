@@ -24,6 +24,9 @@ jobs:
         run: npm run docker run test:badges
 
       - name: list directory
+        run: ls
+
+      - name: list directory coverage
         run: ls coverage
 
       - name: Commit badges
