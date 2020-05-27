@@ -1,6 +1,6 @@
 # GammeoMQ
 
-![Coverage:branches](./.badges/badge-branches.svg) ![Coverage:functions](./.badges/badge-functions.svg) ![Coverage:lines](./.badges/badge-lines.svg) ![Coverage:statements](./.badges/badge-statements.svg)
+[![codecov](https://codecov.io/gh/studiomagnetique/gammeo-mq/branch/master/graph/badge.svg?token=4MIVE9QY3L)](https://codecov.io/gh/studiomagnetique/gammeo-mq)
 
 GammeoMQ is a distributed message queue. It uses custom store and transport to be software agnostic.
 
