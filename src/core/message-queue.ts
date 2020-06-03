@@ -131,6 +131,12 @@ export class MessageQueue {
             }
         }
 
+        let status: Enveloppe['status'] = 'delivered';
+
+        if (errorCount > 0) {
+            status = consumerConfigs.length > 1 ? 'partially_delivered' : 'not_delivered';
+        }
+
         await this.store.write(
             enveloppe.update(errorCount > 0 ? 'partially_delivered' : 'delivered'),
         );
@@ -144,7 +150,7 @@ export class MessageQueue {
             this.router$.route(packet);
             await this.store.write(enveloppe.update('in_flight'));
         } catch (error) {
-            await this.store.write(enveloppe.update('not_routed'));
+            await this.store.write(enveloppe.update('not_routed', error));
         }
     }
 

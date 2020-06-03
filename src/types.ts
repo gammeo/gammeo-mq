@@ -19,9 +19,12 @@ export interface Transport extends Observable<string> {
 }
 
 export interface Store {
+    clear(): void | Promise<void>;
     close(): void | Promise<void>;
+    find(status: Enveloppe['status']): Enveloppe[] | Promise<Enveloppe[]>;
     open(): void | Promise<void>;
     read(id: Enveloppe['id']): Enveloppe | Promise<Enveloppe> | never;
+    remove(id: Enveloppe['id']): void | Promise<void>;
     write(enveloppe: Enveloppe): void | Promise<void>;
 }
 

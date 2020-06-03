@@ -27,10 +27,18 @@ export class MongoDBStore implements Store {
         this.options = { ...defaultOptions, ...options };
     }
 
+    public clear() {
+        return this.collection.drop();
+    }
+
     public async close() {
         if (this.client) {
             await this.client.close();
         }
+    }
+
+    public async find(status: Enveloppe['status']) {
+        return (await this.collection.find({ status }).toArray()) as Enveloppe[];
     }
 
     public async open() {
@@ -78,5 +86,9 @@ export class MongoDBStore implements Store {
         );
 
         return enveloppe;
+    }
+
+    public async remove(id: Enveloppe['id']) {
+        await this.collection.remove({ _id: id });
     }
 }

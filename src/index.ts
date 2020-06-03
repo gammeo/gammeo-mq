@@ -1,3 +1,4 @@
+export * from './core/garbage-collector';
 export * from './core/message-queue';
 export * from './store/in-memory';
 export * from './store/mongodb';
