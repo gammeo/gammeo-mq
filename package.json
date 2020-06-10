@@ -1,6 +1,6 @@
 {
     "name": "@studiomagnetique/gammeo-mq",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Software agnostic message queue",
     "main": "lib/index.js",
     "engines": {
