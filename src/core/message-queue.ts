@@ -14,11 +14,13 @@ const consumerChannel = (
 export interface MessageQueueOptions {
     maxRetryAttempts: number;
     retryInterval: number;
+    pendingMessageMaxAge: number;
 }
 
 const defaultOptions: MessageQueueOptions = {
     maxRetryAttempts: 3,
     retryInterval: 5e3,
+    pendingMessageMaxAge: 60 * 60 * 1e3, // 1h
 };
 
 // Packet used for routing an enveloppe.
@@ -102,6 +104,7 @@ export class MessageQueue {
      */
     public async open() {
         await this.store.open();
+        // await this.warmUp();
         this.subscribeToRetry();
         this.subscribeToRouter();
     }
@@ -178,5 +181,18 @@ export class MessageQueue {
         this.retrySubscription = this.retry$
             .pipe(bufferTime(this.options.retryInterval))
             .subscribe((enveloppes) => enveloppes.forEach((enveloppe) => this.route(enveloppe)));
+    }
+
+    private async warmUp() {
+        const ref = new Date();
+        ref.setTime(ref.getTime() - this.options.pendingMessageMaxAge);
+
+        const pendingEnveloppes = (await this.store.find('pending')).filter(
+            (enveloppe) => enveloppe.updatedAt < ref && enveloppe.status === 'pending',
+        );
+
+        for (const enveloppe of pendingEnveloppes) {
+            await this.route(enveloppe);
+        }
     }
 }

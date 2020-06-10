@@ -10,6 +10,7 @@ export class Enveloppe {
     public readonly retryAttempts: number = 0;
     public error?: Error;
 
+    private _updatedAt: Date;
     private _status:
         | 'pending'
         | 'not_routed'
@@ -33,10 +34,15 @@ export class Enveloppe {
         this._status = status;
 
         this.id = id || nanoid();
+        this._updatedAt = new Date();
     }
 
     get status() {
         return this._status;
+    }
+
+    get updatedAt() {
+        return this._updatedAt;
     }
 
     pack() {
@@ -58,7 +64,7 @@ export class Enveloppe {
     update(status: Enveloppe['status'], error?: Error) {
         this._status = status;
         this.error = Object.freeze(error);
-
+        this._updatedAt = new Date();
         return this;
     }
 
