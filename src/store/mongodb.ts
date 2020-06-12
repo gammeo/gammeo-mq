@@ -89,6 +89,6 @@ export class MongoDBStore implements Store {
     }
 
     public async remove(id: Enveloppe['id']) {
-        await this.collection.remove({ _id: id });
+        await this.collection.deleteOne({ _id: id });
     }
 }
