@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import * as messagepack from 'msgpack-lite';
+import assert from 'assert';
 
 import { Message } from '../types';
 
@@ -26,6 +27,8 @@ export class Enveloppe {
         retryAttempts: number = 0,
         id?: string,
     ) {
+        assert.ok(Array.isArray(messages), 'messages should be an array');
+
         this.channel = channel;
         this.messages = Object.freeze(messages);
         this.retryAttempts = retryAttempts;
