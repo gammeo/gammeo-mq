@@ -6,24 +6,38 @@ GammeoMQ is a distributed message queue. It uses custom store and transport to b
 
 ## Setup
 
-To install the package you must first be logged in the GitHub registry:
+To install the package you must first create a [Gitlab personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
 
-_Tip: Go to [Authenticating to GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#authenticating-to-github-packages) for more information._
+You will have to set this token in your environment variables:
 
 ```sh
-npm login --registry=https://npm.pkg.github.com/
+cp .bashrc .bashrc.bak
+echo export GITLAB_AUTH_TOKEN=$YOUR_TOKEN >> .bashrc
+source .bashrc
+```
+
+Warning ! The GITLAB_AUTH_TOKEN environment variable must be exported before all the NVM environment variables.
+
+Then, you must configure the Gitlab package registry:
+
+```sh
+npm config set @gammeo:registry https://gitlab.com/api/v4/packages/npm/
+npm config set -- '//gitlab.com/api/v4/projects/28316548/packages/npm/:_authToken' "${GITLAB_AUTH_TOKEN}"
+npm config set -- '//gitlab.com/api/v4/packages/npm/:_authToken' "${GITLAB_AUTH_TOKEN}"
 ```
 
 Then add a `.npmrc` file to your project and write in it:
 
 ```
-registry=https://npm.pkg.github.com/studiomagnetique
+@gammeo:registry=https://gitlab.com/api/v4/packages/npm/
+'//gitlab.com/api/v4/packages/npm/:_authToken'="${GITLAB_AUTH_TOKEN}"
+'//gitlab.com/api/v4/projects/28316548/packages/npm/:_authToken'="${GITLAB_AUTH_TOKEN}"
 ```
 
 finally you can install it by running:
 
 ```sh
-npm install @studiomagnetique/gammeo-mq
+npm install @gammeo/gammeo-mq
 ```
 
 ## Usage
@@ -82,12 +96,32 @@ npm run docker test
 
 First, make sure you've bumped the version number and update the changelog.
 
-To publish the package you must first be logged in the GitHub registry:
+To publish the package you must first you must first create a [Gitlab personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
 
-_Tip: Go to [Authenticating to GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#authenticating-to-github-packages) for more information._
+You will have to set this token in your environment variables:
 
 ```sh
-npm login --registry=https://npm.pkg.github.com/
+cp .bashrc .bashrc.bak
+echo export GITLAB_AUTH_TOKEN=$YOUR_TOKEN >> .bashrc
+source .bashrc
+```
+
+Warning ! The GITLAB_AUTH_TOKEN environment variable must be exported before all the NVM environment variables.
+
+Then, you must configure the Gitlab package registry:
+
+```sh
+npm config set @gammeo:registry https://gitlab.com/api/v4/packages/npm/
+npm config set -- '//gitlab.com/api/v4/projects/28316548/packages/npm/:_authToken' "${GITLAB_AUTH_TOKEN}"
+npm config set -- '//gitlab.com/api/v4/packages/npm/:_authToken' "${GITLAB_AUTH_TOKEN}"
+```
+
+Then add a `.npmrc` file to your project and write in it:
+
+```
+@gammeo:registry=https://gitlab.com/api/v4/packages/npm/
+'//gitlab.com/api/v4/packages/npm/:_authToken'="${GITLAB_AUTH_TOKEN}"
+'//gitlab.com/api/v4/projects/28316548/packages/npm/:_authToken'="${GITLAB_AUTH_TOKEN}"
 ```
 
 Then just run: `npm publish`

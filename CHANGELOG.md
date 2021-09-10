@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.0
+
+- Moved npm package registry from Github to Gitlab
+
 ## v0.2.1
 
 -   Ensure Enveloppe messages argument is typed as array ([8](https://github.com/studiomagnetique/gammeo-mq/pull/8))
