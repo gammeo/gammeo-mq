@@ -1,5 +1,5 @@
 {
-    "name": "@studiomagnetique/gammeo-mq",
+    "name": "@gammeo/gammeo-mq",
     "version": "0.0.1",
     "description": "Software agnostic message queue",
     "main": "lib/index.js",
@@ -10,9 +10,6 @@
         "lib/**/*",
         "!__tests__"
     ],
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
-    },
     "scripts": {
         "docker": "docker-compose run node npm",
         "build": "tsc",
@@ -24,14 +21,14 @@
     "types": "lib/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/studiomagnetique/gammeo-mq.git"
+        "url": "git+https://github.com/gammeo/gammeo-mq.git"
     },
-    "author": "Robin Bressan",
-    "license": "UNLICENSED",
+    "author": "Gammeo | Robin Bressan",
+    "license": "MIT",
     "bugs": {
-        "url": "https://github.com/studiomagnetique/gammeo-mq/issues"
+        "url": "https://github.com/gammeo/gammeo-mq/issues"
     },
-    "homepage": "https://github.com/studiomagnetique/gammeo-mq#readme",
+    "homepage": "https://github.com/gammeo/gammeo-mq#readme",
     "dependencies": {
         "@types/lodash": "4.14.152",
         "@types/mongodb": "3.5.18",
