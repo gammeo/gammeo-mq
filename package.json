@@ -10,9 +10,6 @@
         "lib/**/*",
         "!__tests__"
     ],
-    "publishConfig": {
-        "@gammeo:registry": "https://gitlab.com/api/v4/projects/28316548/packages/npm/"
-    },
     "scripts": {
         "docker": "docker-compose run node npm",
         "build": "tsc",
@@ -22,14 +19,14 @@
     "types": "lib/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "git+https://gitlab.com/gammeo/gammeo-mq.git"
+        "url": "git+https://github.com/gammeo/gammeo-mq.git"
     },
-    "author": "Robin Bressan",
-    "license": "UNLICENSED",
+    "author": "Gammeo | Robin Bressan",
+    "license": "MIT",
     "bugs": {
-        "url": "https://gitlab.com/gammeo/gammeo-mq/-/issues"
+        "url": "https://github.com/gammeo/gammeo-mq/issues"
     },
-    "homepage": "https://gitlab.com/gammeo/gammeo-mq",
+    "homepage": "https://github.com/gammeo/gammeo-mq#readme",
     "dependencies": {
         "@types/mongodb": "3.5.9",
         "@types/msgpack-lite": "0.1.7",

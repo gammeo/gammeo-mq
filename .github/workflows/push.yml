@@ -3,17 +3,17 @@ name: Test with Docker
 on: push
 
 jobs:
-  test:
-    
-    runs-on: ubuntu-latest
+    test:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: npm ci
+        steps:
+            - uses: actions/checkout@v2
 
-      - name: Build the stack
-        run: docker-compose up -d
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Test
-        run: npm run docker test
+            - name: Build the stack
+              run: docker-compose up -d
+
+            - name: Test
+              run: npm run docker test
