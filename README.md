@@ -1,35 +1,19 @@
 # GammeoMQ
 
-[![codecov](https://codecov.io/gh/studiomagnetique/gammeo-mq/branch/master/graph/badge.svg?token=4MIVE9QY3L)](https://codecov.io/gh/studiomagnetique/gammeo-mq)
-
 GammeoMQ is a distributed message queue. It uses custom store and transport to be software agnostic.
 
 ## Setup
 
-To install the package you must first be logged in the GitHub registry:
-
-_Tip: Go to [Authenticating to GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#authenticating-to-github-packages) for more information._
+You can install it by running:
 
 ```sh
-npm login --registry=https://npm.pkg.github.com/
-```
-
-Then add a `.npmrc` file to your project and write in it:
-
-```
-registry=https://npm.pkg.github.com/studiomagnetique
-```
-
-finally you can install it by running:
-
-```sh
-npm install @studiomagnetique/gammeo-mq
+npm install @gammeo/gammeo-mq
 ```
 
 ## Usage
 
 ```js
-import { MessageQueue, InMemoryStore, InMemoryTransport } from '@studiomagnetique/gammeo-mq';
+import { MessageQueue, InMemoryStore, InMemoryTransport } from '@gammeo/gammeo-mq';
 
 // the queue can take options as third argument but this one is optional
 const queue = new MessageQueue(new InMemoryStore(), new InMemoryTransport(), {
@@ -51,7 +35,7 @@ queue.publish('foo:1', [{ hello: 'world' }]);
 If you're intend to use the message queue accross several processes like workers, you must use a distributed store and transport, like the mongodb store and the redis transport:
 
 ```js
-import { MessageQueue, MongoDBStore, RedisTransport } from '@studiomagnetique/gammeo-mq';
+import { MessageQueue, MongoDBStore, RedisTransport } from '@gammeo/gammeo-mq';
 
 // the MongoDBStore takes the same arguments than the mongodb node client
 const store = new MongoDBStore('mongodb://root:password@mongo:27017', {
@@ -80,14 +64,8 @@ npm run docker test
 
 ### Publish
 
-First, make sure you've bumped the version number and update the changelog.
+You must be login at npm by running `npm login` command
 
-To publish the package you must first be logged in the GitHub registry:
-
-_Tip: Go to [Authenticating to GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#authenticating-to-github-packages) for more information._
-
-```sh
-npm login --registry=https://npm.pkg.github.com/
-```
+Make sure you've bumped the version number and update the changelog.
 
 Then just run: `npm publish`
